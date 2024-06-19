@@ -6,12 +6,12 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Routing.productsRoute(
+fun Routing.categoriesRoute(
     productRepository: ProductRepository
 ) {
-    route("/products") {
-        get("/{name}") {
-            val name = call.parameters["name"] ?: return@get call.respondText("Please provide product name.")
+    route("/categories") {
+        get("/{categoryName}/products") {
+            val name = call.parameters["categoryName"] ?: return@get call.respondText("Please provide product name.")
             val queries = call.request.rawQueryParameters
             call.respond(productRepository.getProducts(name, Filter(
                 minPrice = if (queries["minPrice"] != null) queries["minPrice"]?.toInt() else null,
