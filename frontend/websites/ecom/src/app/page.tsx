@@ -4,11 +4,12 @@ import {Fragment, useEffect, useState} from "react";
 import Product from "@/dto/Product";
 import {StatusCode} from "@/enums/StatusCodes";
 import {Ratings} from "@/components";
+import {useRouter} from "next/navigation";
 
 const apiService = new ApiService()
 
 export default function Home() {
-
+    const router = useRouter();
     const [keyword, setKeyword] = useState("");
     const [products, setProducts] = useState<Array<Product>>(
         []
@@ -19,6 +20,7 @@ export default function Home() {
             apiService.getProducts(keyword).then((result) => {
                 if (result.statusCode === StatusCode.SUCCESS && "payload" in result && typeof result.payload === "object") {
                     setProducts(result.payload)
+                    console.log(result.payload)
                 }
             })
         }
@@ -61,8 +63,11 @@ export default function Home() {
                             products.map((product) => {
                                 return (
                                     <div
-                                        key={product.productId}
-                                        className={"flex w-full flex-col space-y-3 rounded-lg border px-5 py-5"}
+                                        key={product.pid}
+                                        className={"flex w-full flex-col space-y-3 rounded-lg border px-5 py-5 cursor-pointer"}
+                                        onClick={() => {
+                                            router.push(`/${keyword}?pid=${product.pid}`);
+                                        }}
                                     >
                                         <div className={"flex justify-between text-lg font-medium"}>
                                             <div className="flex items-center space-x-2">

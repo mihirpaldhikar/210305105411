@@ -1,5 +1,5 @@
 export default interface Product {
-    productId: string;
+    pid: string;
     productName: string;
     price: number;
     rating: number;

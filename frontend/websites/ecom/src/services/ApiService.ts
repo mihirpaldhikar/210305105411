@@ -47,4 +47,36 @@ export default class ApiService {
             } as Response<string>;
         }
     }
+
+    public async getProductById(pid: string, category: string): Promise<Response<Product | string>> {
+        try {
+            const response = await this.httpClient.get(`/${category}/products/${pid}`)
+            console.log(response)
+            if (response.status === 200) {
+                return {
+                    statusCode: StatusCode.SUCCESS,
+                    payload: await response.data
+                } as Response<Product>
+            }
+            throw new Error("INTERNAL:An error occurred while getting products");
+        } catch (error) {
+            let axiosError = (await error) as AxiosError;
+            if (axiosError.message.includes("INTERNAL:")) {
+                return {
+                    statusCode: StatusCode.FAILURE,
+                    message: axiosError.message.replaceAll("INTERNAL:", ""),
+                } as Response<string>;
+            }
+
+            let errorResponseString = JSON.stringify(
+                (await axiosError.response?.data) as string,
+            );
+            let errorResponse = JSON.parse(errorResponseString);
+
+            return {
+                statusCode: StatusCode.FAILURE,
+                message: errorResponse["message"],
+            } as Response<string>;
+        }
+    }
 }
