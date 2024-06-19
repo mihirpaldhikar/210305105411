@@ -49,7 +49,7 @@ fun Application.configureHTTP() {
         allowHeader(HttpHeaders.AccessControlAllowCredentials)
 
         if (environment.developmentMode) {
-            anyHost()
+            allowHost("localhost:3000", listOf("http", "https"))
         }
 
     }
