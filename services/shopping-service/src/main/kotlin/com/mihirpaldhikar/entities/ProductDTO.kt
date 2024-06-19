@@ -2,12 +2,10 @@ package com.mihirpaldhikar.entities
 
 import com.google.gson.annotations.Expose
 
-data class Product(
-    @Expose val pid: String,
+data class ProductDTO(
     @Expose val productName: String,
     @Expose val price: Double,
     @Expose val rating: Double,
     @Expose val discount: Int,
-    @Expose val availability: String,
-    @Expose val company: String
+    @Expose val availability: String
 )

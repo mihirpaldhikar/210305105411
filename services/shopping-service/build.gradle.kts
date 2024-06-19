@@ -33,10 +33,13 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("io.ktor:ktor-client-core")
     implementation("io.ktor:ktor-client-cio")
+    implementation("io.ktor:ktor-client-content-negotiation")
+    implementation("io.ktor:ktor-serialization-gson")
 
     // Koin Dependencies
     implementation("io.insert-koin:koin-ktor:$koinVersion")
     implementation("io.insert-koin:koin-logger-slf4j:$koinVersion")
+    implementation("io.ktor:ktor-client-cio-jvm:2.3.11")
 
     // Test Dependencies
     testImplementation("io.ktor:ktor-server-tests-jvm")
