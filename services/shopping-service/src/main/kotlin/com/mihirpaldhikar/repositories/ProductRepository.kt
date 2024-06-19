@@ -2,6 +2,7 @@ package com.mihirpaldhikar.repositories
 
 import com.mihirpaldhikar.Environment
 import com.mihirpaldhikar.entities.AuthResponse
+import com.mihirpaldhikar.entities.Filter
 import com.mihirpaldhikar.entities.Product
 import com.mihirpaldhikar.entities.ProductDTO
 import datasource.ProductDatasource
@@ -39,9 +40,14 @@ class ProductRepository(
         return authCredentials.accessToken
     }
 
-    override suspend fun getProductsFromCompany(company: String, category: String): List<ProductDTO> {
+    override suspend fun getProductsFromCompany(
+        company: String,
+        category: String,
+        minValue: Int,
+        maxValue: Int
+    ): List<ProductDTO> {
         val response =
-            httpClient.get("${environment.baseURL}/test/companies/${company}/categories/${category}/products?top=10&minPrice=1&maxPrice=1000") {
+            httpClient.get("${environment.baseURL}/test/companies/${company}/categories/${category}/products?top=10&minPrice=${minValue.toInt()}&maxPrice=${maxValue.toInt()}") {
                 header("Content-Type", "application/json")
                 header("Accept", "application/json")
                 header(
@@ -52,11 +58,12 @@ class ProductRepository(
         return response.body<List<ProductDTO>>()
     }
 
-    override suspend fun getProducts(category: String): List<Product> {
-        val products: MutableList<Product> = mutableListOf()
+    override suspend fun getProducts(category: String, filter: Filter): List<Product> {
+        var products: MutableList<Product> = mutableListOf()
 
         for (company in companies) {
-            val companyProducts = getProductsFromCompany(company, category)
+            val companyProducts =
+                getProductsFromCompany(company, category, filter.minPrice ?: 1, filter.maxPrice ?: Int.MAX_VALUE)
             for (product in companyProducts) {
                 products.add(
                     Product(
@@ -70,6 +77,19 @@ class ProductRepository(
                     )
                 )
             }
+        }
+
+
+        if (filter.company != null) {
+            products = products.filter { it.company == filter.company }.toMutableList()
+        }
+
+        if (filter.discount != null) {
+            products = products.filter { it.discount >= filter.discount }.toMutableList()
+        }
+
+        if (filter.rating != null) {
+            products = products.filter { it.rating >= filter.rating }.toMutableList()
         }
 
         return products
