@@ -1,9 +1,6 @@
 package com.mihirpaldhikar
 
-import com.mihirpaldhikar.plugins.configureHTTP
-import com.mihirpaldhikar.plugins.configureMonitoring
-import com.mihirpaldhikar.plugins.configureRouting
-import com.mihirpaldhikar.plugins.configureSerialization
+import com.mihirpaldhikar.plugins.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -19,6 +16,7 @@ fun main() {
 }
 
 fun Application.module() {
+    configureDependencyInjection()
     configureHTTP()
     configureMonitoring()
     configureSerialization()
