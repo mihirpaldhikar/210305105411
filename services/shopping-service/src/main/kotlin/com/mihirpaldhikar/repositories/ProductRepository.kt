@@ -30,6 +30,8 @@ class ProductRepository(
 
     private val companies: Array<String> = arrayOf("AMZ", "FLP", "SNP", "MYN", "AZO")
 
+    private var products: MutableList<Product> = mutableListOf()
+
     private suspend fun getAuthorizationToken(): String {
         val response = httpClient.post("${environment.baseURL}/test/auth") {
             header("Content-Type", "application/json")
@@ -40,7 +42,7 @@ class ProductRepository(
         return authCredentials.accessToken
     }
 
-    override suspend fun getProductsFromCompany(
+    private suspend fun getProductsFromCompany(
         company: String,
         category: String,
         minValue: Int,
@@ -91,7 +93,14 @@ class ProductRepository(
         if (filter.rating != null) {
             products = products.filter { it.rating >= filter.rating }.toMutableList()
         }
-
+        this.products = products
         return products
+    }
+
+    suspend fun getProductById(productId: String, category: String): Product? {
+        if (products.size == 0) {
+            this.getProducts(category, Filter())
+        }
+        return this.products.filter { it.pid == productId }.getOrNull(0)
     }
 }
