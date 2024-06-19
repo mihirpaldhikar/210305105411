@@ -1,13 +1,16 @@
 package com.mihirpaldhikar.plugins
 
+import com.mihirpaldhikar.repositories.ProductRepository
+import com.mihirpaldhikar.routes.productsRoute
 import io.ktor.server.application.*
-import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.koin.java.KoinJavaComponent
 
 fun Application.configureRouting() {
+    val productRepository by KoinJavaComponent.inject<ProductRepository>(ProductRepository::class.java)
     routing {
-        get("/") {
-            call.respondText("Hello From Shopping Service!")
-        }
+        productsRoute(
+            productRepository = productRepository
+        )
     }
 }
